@@ -16,7 +16,7 @@ const CreateTask = ({ tasks, setTasks }) => {
         e.preventDefault();
     
         try {
-          const response = await axios.post("http://localhost:8080/task", {name:newtask.name,id:newtask.id});
+          const response = await axios.post("https://task-backend-mu.vercel.app/task", {name:newtask.name,id:newtask.id});
           const {task, message} = response.data;
           setTasks((prev) =>[...prev, task])
         //   console.log(response.data.message); 

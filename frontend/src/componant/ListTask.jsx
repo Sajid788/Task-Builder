@@ -58,7 +58,7 @@ const Section = ({
         })
       }))
 
-  let text = "Todo";
+  let text = "Task";
   let bg = "bg-slate-500";
   let tasksToMap = tasks;
 
