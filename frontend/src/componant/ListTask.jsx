@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useDrag, useDrop } from 'react-dnd';
+
 
 const ListTasks = ({ tasks, setTasks }) => {
   const [todos, setTodos] = useState([]);
@@ -48,6 +50,14 @@ const Section = ({
   done,
   rework,
 }) => {
+    const [{ isOver }, drop] = useDrop(() => ({
+        accept: "task",
+        drop: (item) => addItemToSection(item.id),
+        collect: (monitor) => ({
+          isOver: !!monitor.isOver()
+        })
+      }))
+
   let text = "Todo";
   let bg = "bg-slate-500";
   let tasksToMap = tasks;
@@ -68,8 +78,23 @@ const Section = ({
     tasksToMap = rework;
   }
 
+  const addItemToSection = (id) =>{
+    try {
+        setTasks((prev) =>{
+            return prev.map((task) =>{
+                if(task.id == id){
+                    return {...task, status}
+                }
+                return task;
+            })
+        })
+    } catch (error) {
+        console.log(error)
+    }
+  }
+
   return (
-    <div className={`w-64`}>
+    <div ref = {drop} className={`w-64 ${isOver ? "bg-slate-200" : ""}`}>
       <Header text={text} bg={bg} count={tasksToMap.length} />
       {tasksToMap.length > 0 && 
       tasksToMap.map((task) =>(
@@ -92,10 +117,18 @@ const Header = ({ text, bg, count }) => {
   );
 };
 
-
 const Task = ({task, tasks, setTasks}) => {
+    const [{ isDragging }, drag] = useDrag(() => ({
+        type: "task",
+        item: {id: task.id},
+        collect: (monitor) => ({
+          isDragging: !!monitor.isDragging()
+        })
+      }))
+      console.log(isDragging)
     return (
-      <div className="relative p-4 mt-8 shadow-md rounded-md cursor-grab">
+      <div  ref = {drag} 
+      className = {`relative p-4 mt-8 shadow-md rounded-md  cursor-grab ${isDragging ? "opacity-25" : "opacity-100"} `}>
        <p>{task.name}</p>
       </div>
       
