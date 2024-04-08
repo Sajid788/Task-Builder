@@ -10,18 +10,16 @@ const CreateTask = ({ tasks, setTasks }) => {
         status:"tasks",
 
     })
-    console.log(newtask)
+    // console.log(newtask)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
     
         try {
-          const response = await axios.post("http://localhost:8080/task", {
-            name: newtask.name,
-            status: newtask.status,
-            id: newtask.id
-          });
-          console.log(response.data.message); 
+          const response = await axios.post("http://localhost:8080/task", {name:newtask.name,id:newtask.id});
+          const {task, message} = response.data;
+          setTasks((prev) =>[...prev, task])
+        //   console.log(response.data.message); 
           newSetTask({
             id: uuidv4(),
             name: "",
