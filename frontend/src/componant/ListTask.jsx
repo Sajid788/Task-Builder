@@ -1,5 +1,9 @@
+import axios from 'axios';
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useDrag, useDrop } from 'react-dnd';
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 
 const ListTasks = ({ tasks, setTasks }) => {
@@ -10,7 +14,7 @@ const ListTasks = ({ tasks, setTasks }) => {
 
   useEffect(() => {
     const fTodos = tasks.filter((task) => task.status === "task");
-    const fInProgress = tasks.filter((task) => task.status === "in progress");
+    const fInProgress = tasks.filter((task) => task.status === "inProgress");
     const fDone = tasks.filter((task) => task.status === "done");
     const fRework = tasks.filter((task) => task.status === "rework");
     setTodos(fTodos);
@@ -19,9 +23,10 @@ const ListTasks = ({ tasks, setTasks }) => {
     setRework(fRework);
   }, [tasks]);
 
-  const statuses = ["task", "in progress", "done", "rework"];
+  const statuses = ["task", "inProgress", "done", "rework"];
 
   return (
+    <DndProvider backend={HTML5Backend}>
     <div className="flex gap-16">
       {statuses.map((status, index) => (
         <Section
@@ -36,6 +41,7 @@ const ListTasks = ({ tasks, setTasks }) => {
         />
       ))}
     </div>
+    </DndProvider>
   );
 };
 
@@ -52,7 +58,7 @@ const Section = ({
 }) => {
     const [{ isOver }, drop] = useDrop(() => ({
         accept: "task",
-        drop: (item) => addItemToSection(item.id),
+        drop: (item) => addItemToSection(item.id, item._id),
         collect: (monitor) => ({
           isOver: !!monitor.isOver()
         })
@@ -62,7 +68,7 @@ const Section = ({
   let bg = "bg-slate-500";
   let tasksToMap = tasks;
 
-  if (status === "in progress") {
+  if (status === "inProgress") {
     text = "In Progress";
     bg = "bg-purple-500";
     tasksToMap = inProgress;
@@ -78,16 +84,18 @@ const Section = ({
     tasksToMap = rework;
   }
 
-  const addItemToSection = (id) =>{
+  const addItemToSection = async (id,_id) => {
     try {
-        setTasks((prev) =>{
-            return prev.map((task) =>{
-                if(task.id == id){
-                    return {...task, status}
-                }
-                return task;
-            })
-        })
+      setTasks((prev) => {
+       return prev.map((t) => {
+         if (t.id === id) {
+           return { ...t, status:status };
+         }
+         return t;
+       });
+     });
+        
+        await axios.put(`http://localhost:8080/task/edit/${_id}`,{status})
     } catch (error) {
         console.log(error)
     }
@@ -120,18 +128,51 @@ const Header = ({ text, bg, count }) => {
 const Task = ({task, tasks, setTasks}) => {
     const [{ isDragging }, drag] = useDrag(() => ({
         type: "task",
-        item: {id: task.id},
+        item: {id: task.id,_id:task._id},
         collect: (monitor) => ({
           isDragging: !!monitor.isDragging()
         })
       }))
+
+      const handleRemove = async (_id,id) => {
+        try {
+          await axios.delete(`http://localhost:8080/task/${_id}`);
+    
+          setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id)); 
+        } catch (error) {
+          console.error("Error deleting task:", error);
+
+        }
+      };
+    
+
       console.log(isDragging)
     return (
       <div  ref = {drag} 
       className = {`relative p-4 mt-8 shadow-md rounded-md  cursor-grab ${isDragging ? "opacity-25" : "opacity-100"} `}>
        <p>{task.name}</p>
-      </div>
+       <button
+        className="absolute bottom-1 right-1 text-slate-400"
+        onClick={() => handleRemove(task._id,task.id)
       
+        }
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+          />
+        </svg>
+      </button>
+      </div>
       
     );
   };
