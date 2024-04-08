@@ -14,7 +14,6 @@ useEffect(() =>{
         try {
             const response = await axios.get("https://task-backend-mu.vercel.app/task");
             setTasks(response.data)
-            // console.log(response)
         } catch (error) {
         
             console.log(error)
