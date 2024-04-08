@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import CreateTask from "./CreateTask";
-import ListTask from "./ListTask";
+import React, { lazy, useEffect, useState } from "react";
+import axios from "axios";
+const CreateTask = lazy(() => import("./CreateTask"));
+const ListTask= lazy(() => import("./ListTask"));
 // import { DndProvider } from "react-dnd";
 // import { HTML5Backend } from "react-dnd-html5-backend";
-import axios from "axios";
 
 function Task() {
   const [tasks, setTasks] = useState([]);
@@ -13,7 +13,7 @@ function Task() {
     const fetchTasks = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/task"
+          "https://task-backend-mu.vercel.app/task"
         );
         setTasks(response.data);
       } catch (error) {

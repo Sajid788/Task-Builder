@@ -89,13 +89,13 @@ const Section = ({
       setTasks((prev) => {
        return prev.map((t) => {
          if (t.id === id) {
-           return { ...t, status:status };
+           return { ...t, status};
          }
          return t;
        });
      });
         
-        await axios.put(`http://localhost:8080/task/edit/${_id}`,{status})
+        await axios.put(`https://task-backend-mu.vercel.app/task/edit/${_id}`,{status:status})
     } catch (error) {
         console.log(error)
     }
@@ -136,7 +136,7 @@ const Task = ({task, tasks, setTasks}) => {
 
       const handleRemove = async (_id,id) => {
         try {
-          await axios.delete(`http://localhost:8080/task/${_id}`);
+          await axios.delete(`https://task-backend-mu.vercel.app/task/${_id}`);
     
           setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id)); 
         } catch (error) {
