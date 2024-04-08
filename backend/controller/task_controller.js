@@ -20,8 +20,9 @@ const getTasks = async (req, res) => {
 
 const createTask = async (req, res) => {
   try {
+    const userId = req.userId
     const { name, id } = req.body;
-    const task = new TaskModel({ name, status: "tasks", Date: new Date(), id });
+    const task = new TaskModel({ name, status: "tasks", Date: new Date(), userId, id });
     await task.save();
     res.status(201).json({ message: "Task created successfully", task });
   } catch (error) {

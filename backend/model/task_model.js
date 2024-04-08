@@ -5,6 +5,10 @@ const taskSchema = new mongoose.Schema({
   status: {type: String, enum: ["tasks", "inProgress", "done", "rework"],default: "tasks"},
    Date: { type: Date, default: Date.now },
    id: {type: String},
+   userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', 
+    }
 });
 
 
