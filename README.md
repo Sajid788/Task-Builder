@@ -1,7 +1,7 @@
 # Task-Builder
 
 ### Frontend 
- live link :- https://taskbuild.netlify.app/
+ live link :- https://taskc.netlify.app/
 
 ### Backend 
  live link:- https://task-backend-mu.vercel.app/task
@@ -11,7 +11,8 @@
 -  InProgress
 -  Done
 -  Rework
--  You can able to drag drop the task.
+-  User can able to drag drop the task.
+-  User can able to delete and update task by drag and drop
 
 ## Tech Stack
 -   React.js
@@ -25,11 +26,17 @@
 -   Mongoose
 
  # API Endpoint
+ - `POST `    /user/register
+ - `POST`     /user/login
+ 
 - `POST `   /task
 - `GET`     /task
+-  `PUT`    /task/edit/:id
+-  `DELETE` /task/:id
+
 
 ### 3. Home page
-![Screenshot 2024-04-08 105552](https://github.com/Sajid788/Task-Builder/assets/129252454/67b85052-4c60-4aad-83ae-ee0213ade731)
+![Screenshot 2024-04-08 193808](https://github.com/Sajid788/Task-Builder/assets/129252454/760b209b-d544-4d87-b81f-382bfdfdc69a)
 
 
  
