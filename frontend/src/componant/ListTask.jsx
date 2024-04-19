@@ -114,7 +114,7 @@ const Section = ({
       <Header text={text} bg={bg} count={tasksToMap.length} />
       {tasksToMap.length > 0 && 
       tasksToMap.map((task) =>(
-        <Task key = {task.id} tasks = {tasks} setTasks = {setTasks} task = {task}/>
+        <Task key = {task.id} tasks = {tasks} setTasks = {setTasks} task = {task} setNewDate={setNewDate}/>
       ))}
     </div>
   );
