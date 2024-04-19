@@ -11,6 +11,8 @@ const ListTasks = ({ tasks, setTasks }) => {
   const [inProgress, setInProgress] = useState([]);
   const [done, setDone] = useState([]);
   const [rework, setRework] = useState([]);
+  // const [date, setDate] = useState(new Date(). toISOString)
+  const [newDate, setNewDate] = useState(" ");
 
   useEffect(() => {
     const fTodos = tasks.filter((task) => task.status === "task");
@@ -38,6 +40,8 @@ const ListTasks = ({ tasks, setTasks }) => {
           inProgress={inProgress}
           done={done}
           rework={rework}
+          newDate = {newDate}
+          setNewDate = {setNewDate}
         />
       ))}
     </div>
@@ -55,7 +59,11 @@ const Section = ({
   inProgress,
   done,
   rework,
+  newDate,
+  setNewDate
 }) => {
+
+  
     const [{ isOver }, drop] = useDrop(() => ({
         accept: "task",
         drop: (item) => addItemToSection(item.id, item._id),
@@ -125,7 +133,7 @@ const Header = ({ text, bg, count }) => {
   );
 };
 
-const Task = ({task, tasks, setTasks}) => {
+const Task = ({task, tasks, setTasks, newDate, setNewDate}) => {
     const [{ isDragging }, drag] = useDrag(() => ({
         type: "task",
         item: {id: task.id,_id:task._id},
@@ -144,13 +152,30 @@ const Task = ({task, tasks, setTasks}) => {
 
         }
       };
-    
+      
+      const handleUpdateDate = (id) =>{
+        const updatedTask = tasks.map((t) =>{
+          if(t.id === id){
+            return {...t, date: new Date().toISOString ()};
+          }
+          return t;
+        })
+        setTasks(updatedTask);
+        setNewDate(" ");
+      }
+
+
 
       console.log(isDragging)
     return (
       <div  ref = {drag} 
       className = {`relative p-4 mt-8 shadow-md rounded-md  cursor-grab ${isDragging ? "opacity-25" : "opacity-100"} `}>
        <p>{task.name}</p>
+       <p>{task.Date}</p>
+       <input type="date" value={newDate}
+       onChange={(e) =>setNewDate (e.target.value)}
+       />
+       <button onClick={handleUpdateDate}> edit </button>
        <button
         className="absolute bottom-1 right-1 text-slate-400"
         onClick={() => handleRemove(task._id,task.id)
